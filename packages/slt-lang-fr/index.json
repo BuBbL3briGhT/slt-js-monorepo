@@ -1,0 +1,9 @@
+{
+  "language": "fr",
+  "map": {
+    "fonction": "function",
+    "retour": "return",
+    "si": "if",
+    "sinon": "else"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "language": "it",
+  "map": {
+    "funzione": "function",
+    "ritorna": "return",
+    "se": "if",
+    "altrimenti": "else"
+  }
+}

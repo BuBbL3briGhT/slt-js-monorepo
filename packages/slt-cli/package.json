@@ -1,0 +1,11 @@
+{
+  "name": "slt-cli",
+  "version": "0.1.0",
+  "bin": {
+    "slt-js": "bin/slt-js.js"
+  },
+  "scripts": {
+    "test": "node test/run-tests.js"
+  },
+  "license": "MIT"
+}

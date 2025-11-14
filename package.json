@@ -1,0 +1,15 @@
+{
+  "name": "slt-js-monorepo",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Monorepo for slt-js: core, plugins, language packs, demo",
+  "license": "MIT",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "bootstrap": "pnpm -w install",
+    "test": "pnpm -r test",
+    "build": "pnpm -r build"
+  }
+}

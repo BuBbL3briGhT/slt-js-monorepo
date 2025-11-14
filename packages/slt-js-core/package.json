@@ -1,0 +1,16 @@
+{
+  "name": "slt-js-core",
+  "version": "0.1.0",
+  "main": "lib/index.js",
+  "bin": {
+    "slt-js-core": "bin/slt-js-core.js"
+  },
+  "scripts": {
+    "test": "node test/run-tests.js",
+    "build": "echo build"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=14"
+  }
+}

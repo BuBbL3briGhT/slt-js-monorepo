@@ -1,0 +1,9 @@
+{
+  "language": "zu",
+  "map": {
+    "umsebenzi": "function",
+    "buyisela": "return",
+    "uma": "if",
+    "kungenjalo": "else"
+  }
+}

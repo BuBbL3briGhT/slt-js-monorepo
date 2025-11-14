@@ -1,0 +1,12 @@
+{
+  "name": "slt-babel-plugin",
+  "version": "0.1.0",
+  "main": "lib/index.js",
+  "license": "MIT",
+  "peerDependencies": {
+    "@babel/core": "*"
+  },
+  "scripts": {
+    "test": "node test/run-tests.js"
+  }
+}

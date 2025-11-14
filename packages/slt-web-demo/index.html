@@ -1,0 +1,31 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>slt-js Web Demo</title>
+<style>body{font-family:system-ui,Arial;margin:12px}textarea{width:48%;height:300px}pre{width:48%;height:300px;overflow:auto;background:#f6f6f6;padding:8px}</style>
+</head><body>
+<h1>slt-js Web Demo (local)</h1>
+<select id="lang"><option value="es">es</option><option value="fr">fr</option><option value="it">it</option><option value="zu">zu</option></select>
+<button id="transpile">Transpile → canonical JS</button>
+<br/><br/>
+<textarea id="in" placeholder="Paste SLT-coded JS here"></textarea>
+<pre id="out"></pre>
+<script>
+const maps = {
+  es: { 'función':'function','vuelta':'return','si':'if','sino':'else' },
+  fr: { 'fonction':'function','retour':'return','si':'if','sinon':'else' },
+  it: { 'funzione':'function','ritorna':'return','se':'if','altrimenti':'else' },
+  zu: { 'umsebenzi':'function','buyisela':'return','uma':'if','kungenjalo':'else' }
+};
+function transpile(src, map){
+  try {
+    const re = new RegExp('\\\b('+Object.keys(map).map(k=>k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')+')\\\b','gu');
+    return src.replace(re, m=>map[m]||m);
+  } catch(e){ return 'Error: '+e.message; }
+}
+document.getElementById('transpile').onclick = ()=>{
+  const src = document.getElementById('in').value;
+  const lang = document.getElementById('lang').value;
+  const out = transpile(src, maps[lang]||{});
+  document.getElementById('out').textContent = out;
+};
+</script>
+</body></html>
