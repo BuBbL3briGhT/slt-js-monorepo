@@ -17,7 +17,7 @@ const maps = {
 };
 function transpile(src, map){
   try {
-    const re = new RegExp('\\\b('+Object.keys(map).map(k=>k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')+')\\\b','gu');
+    const re = new RegExp('\\b('+Object.keys(map).map(k=>k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')+')\\b','gu');
     return src.replace(re, m=>map[m]||m);
   } catch(e){ return 'Error: '+e.message; }
 }
