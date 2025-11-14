@@ -29,7 +29,7 @@ function computeSkipRanges(src) {
     if (ch==='/' && src[i+1]==='/'){ const start=i; i+=2; while(i<N && src[i]!=='\n') i++; ranges.push([start,i]); continue; }
     if (ch==='/' && src[i+1]==='*'){ const start=i; i+=2; while(i<N && !(src[i]==='*' && src[i+1]==='/')) i++; i+=2; ranges.push([start,i]); continue; }
     if (ch==="'"||ch==='"'){ const q=ch; const start=i; i++; while(i<N){ if (src[i]==='\\'){ i+=2; continue;} if (src[i]===q){ i++; break;} i++; } ranges.push([start,i]); continue; }
-    if (ch==='`'){ const start=i; i++; while(i<N){ if (src[i]==='\\'){ i+=2; continue;} if (src[i]==='`'){ i++; break;} if (src[i]==='$' && src[i+1]==='{'){ i+=2; let depth=1; while(i<N && depth>0){ if (src[i]==='"'||src[i]==="'\"\"'){ const q=src[i++]; while(i<N){ if (src[i]==='\\'){ i+=2; continue;} if (src[i]===q){ i++; break;} i++; } continue; } if (src[i]==='{'){ depth++; i++; continue;} if (src[i]==='}'){ depth--; i++; continue;} i++; } continue;} i++; } ranges.push([start,i]); continue; }
+    if (ch==='`'){ const start=i; i++; while(i<N){ if (src[i]==='\\'){ i+=2; continue;} if (src[i]==='`'){ i++; break;} if (src[i]==='$' && src[i+1]==='{'){ i+=2; let depth=1; while(i<N && depth>0){ if (src[i]==='"'||src[i]==="'\"\"'"){ const q=src[i++]; while(i<N){ if (src[i]==='\\'){ i+=2; continue;} if (src[i]===q){ i++; break;} i++; } continue; } if (src[i]==='{'){ depth++; i++; continue;} if (src[i]==='}'){ depth--; i++; continue;} i++; } continue;} i++; } ranges.push([start,i]); continue; }
     i++;
   }
   return ranges;
