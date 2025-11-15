@@ -1,15 +1,26 @@
 {
-  "name": "slt-js-monorepo",
+  "name": "slt-js",
+  "version": "1.0.0",
   "private": true,
-  "version": "0.1.0",
-  "description": "Monorepo for slt-js: core, plugins, language packs, demo",
+  "description": "SLT-JS Monorepo — Semantic Linguistic Transpiler for natural-language-driven JavaScript construction",
   "license": "MIT",
+  "author": "Kandi & ChatGPT",
+  "packageManager": "pnpm@9.0.0",
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "packages/@slt-lang/*"
   ],
   "scripts": {
-    "bootstrap": "pnpm -w install",
-    "test": "pnpm -r test",
-    "build": "pnpm -r build"
+    "build": "pnpm -r --parallel build",
+    "test": "pnpm -r --parallel test",
+    "lint": "pnpm -r lint",
+    "format": "pnpm -r format",
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3",
+    "eslint": "^9.0.0",
+    "prettier": "^3.2.5",
+    "husky": "^9.0.7"
   }
 }

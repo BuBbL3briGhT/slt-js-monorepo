@@ -1,2 +1,23 @@
-node_modules
-pnpm-lock.yaml
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+coverage/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Release artifacts
+*.tgz
+*.tar.gz
