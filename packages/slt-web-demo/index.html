@@ -1,31 +1,62 @@
-<!doctype html>
-<html><head><meta charset="utf-8"><title>slt-js Web Demo</title>
-<style>body{font-family:system-ui,Arial;margin:12px}textarea{width:48%;height:300px}pre{width:48%;height:300px;overflow:auto;background:#f6f6f6;padding:8px}</style>
-</head><body>
-<h1>slt-js Web Demo (local)</h1>
-<select id="lang"><option value="es">es</option><option value="fr">fr</option><option value="it">it</option><option value="zu">zu</option></select>
-<button id="transpile">Transpile → canonical JS</button>
-<br/><br/>
-<textarea id="in" placeholder="Paste SLT-coded JS here"></textarea>
-<pre id="out"></pre>
-<script>
-const maps = {
-  es: { 'función':'function','vuelta':'return','si':'if','sino':'else' },
-  fr: { 'fonction':'function','retour':'return','si':'if','sinon':'else' },
-  it: { 'funzione':'function','ritorna':'return','se':'if','altrimenti':'else' },
-  zu: { 'umsebenzi':'function','buyisela':'return','uma':'if','kungenjalo':'else' }
-};
-function transpile(src, map){
-  try {
-    const re = new RegExp('\\b('+Object.keys(map).map(k=>k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')+')\\b','gu');
-    return src.replace(re, m=>map[m]||m);
-  } catch(e){ return 'Error: '+e.message; }
-}
-document.getElementById('transpile').onclick = ()=>{
-  const src = document.getElementById('in').value;
-  const lang = document.getElementById('lang').value;
-  const out = transpile(src, maps[lang]||{});
-  document.getElementById('out').textContent = out;
-};
-</script>
-</body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>SLT-JS Web Demo</title>
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- CodeMirror (core + basic modes) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.9/codemirror.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.9/codemirror.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.9/mode/javascript/javascript.min.js"></script>
+</head>
+<body>
+
+<header>
+  <h1>SLT-JS Transpiler Playground</h1>
+  <p>Write JavaScript using your language’s natural keywords.</p>
+</header>
+
+<section id="controls">
+  <label for="languageSelect">Language:</label>
+  <select id="languageSelect"></select>
+
+  <label for="modeToggle">Mode:</label>
+  <select id="modeToggle">
+    <option value="to-js">Transpile → JavaScript</option>
+    <option value="from-js">Forward-convert ← JavaScript</option>
+  </select>
+
+  <button id="runBtn">Transpile</button>
+</section>
+
+<section id="editors">
+  <div class="editor-card">
+    <h2>Input</h2>
+    <textarea id="input"></textarea>
+  </div>
+
+  <div class="editor-card">
+    <h2>Output</h2>
+    <textarea id="output"></textarea>
+  </div>
+</section>
+
+<section id="debug" class="grid-3">
+  <div>
+    <h3>Acorn AST</h3>
+    <pre id="astOutput"></pre>
+  </div>
+  <div>
+    <h3>Normalized AST</h3>
+    <pre id="normAstOutput"></pre>
+  </div>
+  <div>
+    <h3>Babel Output</h3>
+    <pre id="babelOut"></pre>
+  </div>
+</section>
+
+<script type="module" src="./demo.js"></script>
+</body>
+</html>
