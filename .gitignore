@@ -21,3 +21,7 @@ Thumbs.db
 # Release artifacts
 *.tgz
 *.tar.gz
+
+*-lock.*
+*.tsbuildinfo
+-

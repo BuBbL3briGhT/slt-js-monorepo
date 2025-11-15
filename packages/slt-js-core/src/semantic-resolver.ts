@@ -1,4 +1,4 @@
-mport { GrammarMatch, SLTSemanticResult } from "./types";
+import { GrammarMatch, SLTSemanticResult } from "./types";
 
 export class SemanticResolver {
   resolve(match: GrammarMatch): SLTSemanticResult {
