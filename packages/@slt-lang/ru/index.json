@@ -1,0 +1,11 @@
+{
+  "language": "Russian",
+  "iso": "ru",
+  "map": {
+    "funkciya": "function",
+    "vozvrat": "return",
+    "poka": "while",
+    "esli": "if",
+    "inache": "else"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "name": "@slt-lang/pt",
+  "version": "0.1.0",
+  "description": "Portuguese keyword pack for SLT-JS",
+  "main": "index.json",
+  "license": "MIT"
+}

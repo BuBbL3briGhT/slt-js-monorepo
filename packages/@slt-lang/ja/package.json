@@ -1,0 +1,7 @@
+{
+  "name": "@slt-lang/ja",
+  "version": "0.1.0",
+  "description": "Japanese keyword pack for SLT-JS",
+  "main": "index.json",
+  "license": "MIT"
+}

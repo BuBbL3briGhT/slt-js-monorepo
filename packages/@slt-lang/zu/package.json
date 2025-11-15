@@ -1,0 +1,7 @@
+{
+  "name": "@slt-lang/zu",
+  "version": "0.1.0",
+  "description": "Zulu keyword pack for SLT-JS",
+  "main": "index.json",
+  "license": "MIT"
+}

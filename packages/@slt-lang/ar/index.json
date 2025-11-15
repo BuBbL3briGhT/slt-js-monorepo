@@ -1,0 +1,11 @@
+{
+  "language": "Arabic",
+  "iso": "ar",
+  "map": {
+    "دالة": "function",
+    "ارجع": "return",
+    "بينما": "while",
+    "اذا": "if",
+    "وإلا": "else"
+  }
+}

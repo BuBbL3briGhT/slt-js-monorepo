@@ -1,0 +1,18 @@
+{
+  "language": "German",
+  "iso": "de",
+  "map": {
+    "funktion": "function",
+    "zurueck": "return",
+    "während": "while",
+    "wahrend": "while",
+    "wenn": "if",
+    "sonst": "else",
+    "konst": "const",
+    "lass": "let",
+    "für": "for",
+    "fuer": "for",
+    "brechen": "break",
+    "fortsetzen": "continue"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "name": "@slt-lang/hi",
+  "version": "0.1.0",
+  "description": "Hindi keyword pack for SLT-JS",
+  "main": "index.json",
+  "license": "MIT"
+}

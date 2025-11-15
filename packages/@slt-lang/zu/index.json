@@ -1,0 +1,12 @@
+{
+  "language": "Zulu",
+  "iso": "zu",
+  "map": {
+    "umsebenzi": "function",
+    "buyisela": "return",
+    "uma": "if",
+    "kungenjalo": "else",
+    "noma": "while",
+    "kwi": "for"
+  }
+}

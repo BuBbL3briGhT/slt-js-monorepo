@@ -1,0 +1,18 @@
+{
+  "language": "Portuguese",
+  "iso": "pt",
+  "map": {
+    "função": "function",
+    "funcao": "function",
+    "retorna": "return",
+    "enquanto": "while",
+    "se": "if",
+    "senão": "else",
+    "senao": "else",
+    "constante": "const",
+    "deixa": "let",
+    "para": "for",
+    "quebrar": "break",
+    "continuar": "continue"
+  }
+}

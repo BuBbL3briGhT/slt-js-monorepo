@@ -1,0 +1,28 @@
+{
+  "language": "French",
+  "iso": "fr",
+  "map": {
+    "fonction": "function",
+    "retour": "return",
+    "tantque": "while",
+    "si": "if",
+    "sinon": "else",
+    "constante": "const",
+    "laisse": "let",
+    "pour": "for",
+    "break": "break",
+    "continuer": "continue",
+    "essayer": "try",
+    "attraper": "catch",
+    "finalement": "finally",
+    "classe": "class",
+    "nouveau": "new",
+    "importer": "import",
+    "de": "from",
+    "comme": "as",
+    "exporter": "export",
+    "nul": "null",
+    "vrai": "true",
+    "faux": "false"
+  }
+}

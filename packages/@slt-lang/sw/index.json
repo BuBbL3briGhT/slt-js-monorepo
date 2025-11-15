@@ -1,0 +1,11 @@
+{
+  "language": "Swahili",
+  "iso": "sw",
+  "map": {
+    "kazi": "function",
+    "rudi": "return",
+    "wakati": "while",
+    "kama": "if",
+    "vinginevyo": "else"
+  }
+}

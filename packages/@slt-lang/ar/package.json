@@ -1,0 +1,7 @@
+{
+  "name": "@slt-lang/ar",
+  "version": "0.1.0",
+  "description": "Arabic (MSA) keyword pack for SLT-JS",
+  "main": "index.json",
+  "license": "MIT"
+}

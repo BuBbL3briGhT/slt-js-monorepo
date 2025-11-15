@@ -1,0 +1,14 @@
+{
+  "language": "Hindi",
+  "iso": "hi",
+  "map": {
+    "कार्य": "function",
+    "kaarya": "function",
+    "वापस": "return",
+    "जबकि": "while",
+    "अगर": "if",
+    "अन्यथा": "else",
+    "कांस": "const",
+    "छोड़ो": "let"
+  }
+}

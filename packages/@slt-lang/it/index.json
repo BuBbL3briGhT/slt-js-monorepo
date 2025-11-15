@@ -1,0 +1,28 @@
+{
+  "language": "Italian",
+  "iso": "it",
+  "map": {
+    "funzione": "function",
+    "ritorna": "return",
+    "mentre": "while",
+    "se": "if",
+    "altrimenti": "else",
+    "costante": "const",
+    "lascia": "let",
+    "per": "for",
+    "interrompi": "break",
+    "continua": "continue",
+    "prova": "try",
+    "cattura": "catch",
+    "finalmente": "finally",
+    "classe": "class",
+    "nuovo": "new",
+    "importa": "import",
+    "da": "from",
+    "come": "as",
+    "esporta": "export",
+    "nullo": "null",
+    "vero": "true",
+    "falso": "false"
+  }
+}

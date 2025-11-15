@@ -1,0 +1,11 @@
+{
+  "language": "Japanese",
+  "iso": "ja",
+  "map": {
+    "関数": "function",
+    "戻る": "return",
+    "もし": "if",
+    "そうでなければ": "else",
+    "間": "while"
+  }
+}
