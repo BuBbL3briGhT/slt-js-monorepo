@@ -1,12 +1,19 @@
 {
   "name": "slt-babel-plugin",
-  "version": "0.1.0",
+  "version": "1.0.0",
+  "description": "Babel plugin for SLT - canonicalization and SLT AST -> JS transforms",
   "main": "lib/index.js",
-  "license": "MIT",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json || echo build not configured",
+    "test": "node test/run-tests.js"
+  },
   "peerDependencies": {
     "@babel/core": "*"
   },
-  "scripts": {
-    "test": "node test/run-tests.js"
-  }
+  "devDependencies": {
+    "@babel/core": "^7.22.0",
+    "@babel/generator": "^7.22.0"
+  },
+  "license": "MIT"
 }
