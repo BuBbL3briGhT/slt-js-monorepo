@@ -5,7 +5,7 @@
   "description": "SLT-JS Monorepo — Semantic Linguistic Transpiler for natural-language-driven JavaScript construction",
   "license": "MIT",
   "author": "Kandi & ChatGPT",
-  "packageManager": "pnpm@9.0.0",
+  "packageManager": "pnpm@10.22.0",
   "workspaces": [
     "packages/*",
     "packages/@slt-lang/*"
@@ -18,9 +18,9 @@
     "prepare": "husky install"
   },
   "devDependencies": {
-    "typescript": "^5.6.3",
     "eslint": "^9.0.0",
+    "husky": "^9.0.7",
     "prettier": "^3.2.5",
-    "husky": "^9.0.7"
+    "typescript": "^5.6.3"
   }
 }
