@@ -1,115 +1,100 @@
-import { TokenType, tokTypes } from "acorn";
-import type * as acorn from "acorn";
-import {
-  SLTNode,
-  SLTPrintNode,
-  SLTReturnNode,
-  SLTIfEqNode
-} from "./types.js";
+import { Parser } from "acorn";
+import { tokTypes as tt, TokenType } from "acorn";
 
-/**
- * Keywords we recognize (later replaced by language packs).
- */
-const SLT_KEYWORDS = [
-  "print",
-  "imprime",
-  "mostrar",
-  "vuelta",
-  "return",
-  "si"
-];
-
-// Custom acorn token
+// Create a new token type for SLT keywords
 const tt_slt_keyword = new TokenType("slt_keyword", {
   keyword: "slt_keyword"
 });
 
-export function sltAcornPlugin(Parser: typeof acorn.Parser) {
-  return class SLTParser extends Parser {
-    // Override tokenizer for SLT
+// SLT node type
+export interface SLTNode {
+  type: "SLTExpression";
+  keyword: string;
+  value?: string;
+  body?: SLTNode[];
+  start: number;
+  end: number;
+}
+
+export function sltPlugin(ParserClass: typeof Parser) {
+  return class SLTParser extends ParserClass {
+    // Override readWord to detect SLT keywords
     readWord() {
-      const w = super.readWord();
-      if (SLT_KEYWORDS.includes(this.input.slice(w.start, w.end))) {
-        w.type = tt_slt_keyword;
+      const word = super.readWord();
+      if (typeof this.value === "string" && this.value.startsWith("slt_")) {
+        this.type = tt_slt_keyword;
       }
-      return w;
+      return word;
     }
 
-    // Entry interceptor
-    parseStatement(context: string, topLevel: boolean) {
-      const token = this.type;
-
-      if (token === tt_slt_keyword) {
+    // We hook parseStatement to intercept SLT constructs
+    parseStatement(context: any, topLevel: boolean) {
+      if (this.type === tt_slt_keyword) {
         return this.parseSLT();
       }
-
       return super.parseStatement(context, topLevel);
     }
 
-    // Parse custom SLT nodes
+    // Parse our custom SLT construct
     parseSLT(): SLTNode {
       const start = this.start;
       const keyword = this.value as string;
 
       this.next(); // consume keyword
 
-      if (["print", "imprime", "mostrar"].includes(keyword)) {
-        const arg = this.parseSLTStringArg();
-        return {
-          type: "SLTPrintStatement",
-          start,
-          end: this.lastTokEnd,
-          argument: arg
-        } as SLTPrintNode;
-      }
+      // Form: slt_print "hello";
+      if (this.type !== tt.braceL && this.type !== tt.braceR) {
+        let value = "";
 
-      if (keyword === "vuelta") {
-        const arg = this.parseSLTStringArg();
-        return {
-          type: "SLTReturnStatement",
-          start,
-          end: this.lastTokEnd,
-          argument: arg
-        } as SLTReturnNode;
-      }
-
-      if (keyword === "si") {
-        const left = this.parseSLTStringArg();
-        this.expect(tt_slt_keyword); // expect `es`
-        const right = this.parseSLTStringArg();
-
-        this.expect(tokTypes.braceL);
-
-        const body: SLTNode[] = [];
-        while (this.type !== tokTypes.braceR) {
-          body.push(this.parseStatement("block", false) as SLTNode);
+        while (
+          !this.eof() &&
+          this.type !== tt.braceL &&
+          this.type !== tt.semi &&
+          this.type !== tt_slt_keyword
+        ) {
+          value += this.value + " ";
+          this.next();
         }
-        this.expect(tokTypes.braceR);
+
+        if (this.type === tt.semi) {
+          this.next(); // consume semicolon
+        }
 
         return {
-          type: "SLTIfEqStatement",
+          type: "SLTExpression",
+          keyword,
+          value: value.trim(),
           start,
-          end: this.lastTokEnd,
-          left,
-          right,
-          body
+          end: this.lastTokEnd
         };
       }
 
-      this.raise(start, `Unknown SLT keyword: ${keyword}`);
-    }
+      // Form: slt_block { ... }
+      if (this.type === tt.braceL) {
+        this.next(); // consume {
 
-    // A simple argument parser (reads until newline or brace)
-    parseSLTStringArg(): string {
-      let value = "";
-      while (!this.eof() &&
-             this.type !== tokTypes.braceL &&
-             this.type !== tokTypes.semi &&
-             this.type !== tt_slt_keyword) {
-        value += this.value + " ";
-        this.next();
+        const body: SLTNode[] = [];
+
+        while (this.type !== tt.braceR) {
+          if (this.type === tt_slt_keyword) {
+            body.push(this.parseSLT());
+          } else {
+            this.next();
+          }
+        }
+
+        this.next(); // consume }
+
+        return {
+          type: "SLTExpression",
+          keyword,
+          body,
+          start,
+          end: this.lastTokEnd
+        };
       }
-      return value.trim();
+
+      this.raise(start, `Unexpected SLT keyword structure: ${keyword}`);
     }
   };
 }
