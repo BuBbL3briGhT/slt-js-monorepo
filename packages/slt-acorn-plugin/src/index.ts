@@ -1,2 +1,4 @@
-export * from "./plugin.js";
-export * from "./types.js";
+import { Parser } from "acorn";
+import { sltPlugin } from "./plugin";
+
+export const SLTParser = Parser.extend(sltPlugin);

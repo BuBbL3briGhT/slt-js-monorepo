@@ -1,12 +1,10 @@
 import { Parser } from "acorn";
-import { tokTypes as tt, TokenType } from "acorn";
+import * as acorn from "acorn";
 
-// Create a new token type for SLT keywords
-const tt_slt_keyword = new TokenType("slt_keyword", {
-  keyword: "slt_keyword"
-});
+// We reuse identifier token type since custom types are no longer supported
+const tt_identifier = acorn.tokTypes.name;
 
-// SLT node type
+// SLT AST node
 export interface SLTNode {
   type: "SLTExpression";
   keyword: string;
@@ -16,48 +14,57 @@ export interface SLTNode {
   end: number;
 }
 
-export function sltPlugin(ParserClass: typeof Parser) {
-  return class SLTParser extends ParserClass {
-    // Override readWord to detect SLT keywords
+export function sltPlugin(BaseParser: typeof Parser) {
+  return class SLTParser extends BaseParser {
+    // Detect slt_* keywords inside identifier-like tokens
     readWord() {
-      const word = super.readWord();
+      super.readWord();
+
       if (typeof this.value === "string" && this.value.startsWith("slt_")) {
-        this.type = tt_slt_keyword;
+        // We "pretend" it's a keyword by switching the token type
+        // into identifier but marking special flag
+        this.type = tt_identifier;
+        (this as any)._isSLTToken = true;
       }
-      return word;
+
+      return;
     }
 
-    // We hook parseStatement to intercept SLT constructs
+    isSLTToken() {
+      return (this as any)._isSLTToken === true;
+    }
+
+    // Override statement parsing
     parseStatement(context: any, topLevel: boolean) {
-      if (this.type === tt_slt_keyword) {
+      if (this.isSLTToken()) {
         return this.parseSLT();
       }
       return super.parseStatement(context, topLevel);
     }
 
-    // Parse our custom SLT construct
     parseSLT(): SLTNode {
       const start = this.start;
-      const keyword = this.value as string;
+      const keyword = String(this.value);
 
-      this.next(); // consume keyword
+      this.next(); // consume slt_* token
+      (this as any)._isSLTToken = false;
 
-      // Form: slt_print "hello";
-      if (this.type !== tt.braceL && this.type !== tt.braceR) {
+      // Simple: slt_print "hello";
+      if (this.type !== acorn.tokTypes.braceL) {
         let value = "";
 
         while (
           !this.eof() &&
-          this.type !== tt.braceL &&
-          this.type !== tt.semi &&
-          this.type !== tt_slt_keyword
+          this.type !== acorn.tokTypes.braceL &&
+          this.type !== acorn.tokTypes.semi &&
+          !this.isSLTToken()
         ) {
           value += this.value + " ";
           this.next();
         }
 
-        if (this.type === tt.semi) {
-          this.next(); // consume semicolon
+        if (this.type === acorn.tokTypes.semi) {
+          this.next();
         }
 
         return {
@@ -69,21 +76,21 @@ export function sltPlugin(ParserClass: typeof Parser) {
         };
       }
 
-      // Form: slt_block { ... }
-      if (this.type === tt.braceL) {
-        this.next(); // consume {
+      // Block: slt_block { ... }
+      if (this.type === acorn.tokTypes.braceL) {
+        this.next(); // {
 
         const body: SLTNode[] = [];
 
-        while (this.type !== tt.braceR) {
-          if (this.type === tt_slt_keyword) {
+        while (this.type !== acorn.tokTypes.braceR) {
+          if (this.isSLTToken()) {
             body.push(this.parseSLT());
           } else {
             this.next();
           }
         }
 
-        this.next(); // consume }
+        this.next(); // }
 
         return {
           type: "SLTExpression",
@@ -94,7 +101,7 @@ export function sltPlugin(ParserClass: typeof Parser) {
         };
       }
 
-      this.raise(start, `Unexpected SLT keyword structure: ${keyword}`);
+      this.raise(start, `Unexpected SLT keyword: ${keyword}`);
     }
   };
 }

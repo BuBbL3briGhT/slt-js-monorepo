@@ -1,8 +1,10 @@
-import { Parser } from "acorn";
-import { sltAcornPlugin } from "../src/plugin.js";
+import { SLTParser } from "slt-acorn-plugin";
 
-const SLTParser = Parser.extend(sltAcornPlugin);
+const result = SLTParser.parse(`
+  slt_print "hello world";
+  slt_block {
+    slt_debug "inside block";
+  }
+`);
 
-const ast = SLTParser.parse("print hola mundo");
-
-console.log(JSON.stringify(ast, null, 2));
+console.log(JSON.stringify(result, null, 2));
