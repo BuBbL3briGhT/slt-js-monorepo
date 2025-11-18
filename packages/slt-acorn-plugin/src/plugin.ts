@@ -1,10 +1,14 @@
 import { Parser } from "acorn";
 import * as acorn from "acorn";
 
-// We reuse identifier token type since custom types are no longer supported
-const tt_identifier = acorn.tokTypes.name;
+// Note: this file implements an Acorn-v8 friendly plugin class factory.
+// It avoids calling `Parser.extend` (which the types may not advertise)
+// and instead produces a subclass using the provided BaseParser.
+//
+// The implementation uses `any` in a few places to bridge runtime internals
+// that are not fully expressed in the public d.ts from acorn.
 
-// SLT AST node
+// SLT AST node (simple)
 export interface SLTNode {
   type: "SLTExpression";
   keyword: string;
@@ -15,56 +19,69 @@ export interface SLTNode {
 }
 
 export function sltPlugin(BaseParser: typeof Parser) {
-  return class SLTParser extends BaseParser {
-    // Detect slt_* keywords inside identifier-like tokens
-    readWord() {
-      super.readWord();
+  // capture prototypal references for safe calls
+  const baseProto: any = (BaseParser as any).prototype;
 
-      if (typeof this.value === "string" && this.value.startsWith("slt_")) {
-        // We "pretend" it's a keyword by switching the token type
-        // into identifier but marking special flag
-        this.type = tt_identifier;
+  return class SLTParser extends (BaseParser as any) {
+    // Use property arrow members so TypeScript doesn't complain about
+    // re-declaring the member as a function when the base defines it as a property.
+    readWord = () => {
+      // call base implementation if present
+      if (typeof baseProto.readWord === "function") {
+        baseProto.readWord.call(this);
+      }
+
+      // mark slt_* identifiers
+      if (typeof (this as any).value === "string" && (this as any).value.startsWith("slt_")) {
+        (this as any).type = acorn.tokTypes.name;
         (this as any)._isSLTToken = true;
       }
-
       return;
-    }
+    };
 
-    isSLTToken() {
+    isSLTToken = (): boolean => {
       return (this as any)._isSLTToken === true;
-    }
+    };
 
-    // Override statement parsing
-    parseStatement(context: any, topLevel: boolean) {
+    // Match base signature: both parameters optional
+    parseStatement = (context?: any, topLevel?: boolean): any => {
       if (this.isSLTToken()) {
-        return this.parseSLT();
+        return (this as any).parseSLT();
       }
-      return super.parseStatement(context, topLevel);
-    }
+      // call base parseStatement with same args
+      if (typeof baseProto.parseStatement === "function") {
+        return baseProto.parseStatement.call(this, context, topLevel);
+      }
+      // fallback: delegate to super if available
+      return (BaseParser as any).prototype.parseStatement.call(this, context, topLevel);
+    };
 
-    parseSLT(): any {
-      const start = this.start;
-      const keyword = String(this.value);
+    // parseSLT implemented as an arrow property to match member shape
+    parseSLT = (): any => {
+      const self: any = this;
+      const start = self.start;
+      const keyword = String(self.value);
 
-      this.next(); // consume slt_* token
-      (this as any)._isSLTToken = false;
+      // consume token
+      if (typeof self.next === "function") self.next();
+      self._isSLTToken = false;
 
-      // Simple: slt_print "hello";
-      if (this.type !== acorn.tokTypes.braceL) {
+      // Non-block form: slt_x arg...;
+      if (self.type !== acorn.tokTypes.braceL) {
         let value = "";
-
         while (
-          !this.eof() &&
-          this.type !== acorn.tokTypes.braceL &&
-          this.type !== acorn.tokTypes.semi &&
-          !this.isSLTToken()
+          !self.eof?.() &&
+          self.type !== acorn.tokTypes.braceL &&
+          self.type !== acorn.tokTypes.semi &&
+          !self._isSLTToken
         ) {
-          value += this.value + " ";
-          this.next();
+          value += self.value + " ";
+          if (typeof self.next === "function") self.next();
+          else break;
         }
 
-        if (this.type === acorn.tokTypes.semi) {
-          this.next();
+        if (self.type === acorn.tokTypes.semi && typeof self.next === "function") {
+          self.next();
         }
 
         return {
@@ -72,36 +89,41 @@ export function sltPlugin(BaseParser: typeof Parser) {
           keyword,
           value: value.trim(),
           start,
-          end: this.lastTokEnd
-        };
+          end: self.lastTokEnd
+        } as SLTNode;
       }
 
-      // Block: slt_block { ... }
-      if (this.type === acorn.tokTypes.braceL) {
-        this.next(); // {
+      // Block form: slt_block { ... }
+      if (self.type === acorn.tokTypes.braceL) {
+        if (typeof self.next === "function") self.next(); // consume '{'
 
         const body: SLTNode[] = [];
-
-        while (this.type !== acorn.tokTypes.braceR) {
-          if (this.isSLTToken()) {
-            body.push(this.parseSLT());
-          } else {
-            this.next();
+        while (self.type !== acorn.tokTypes.braceR) {
+          if (self._isSLTToken) {
+            const child = (this as any).parseSLT();
+            if (child) body.push(child);
+            continue;
           }
+          if (typeof self.next === "function") self.next();
+          else break;
         }
 
-        this.next(); // }
+        if (self.type === acorn.tokTypes.braceR && typeof self.next === "function") self.next();
 
         return {
           type: "SLTExpression",
           keyword,
           body,
           start,
-          end: this.lastTokEnd
-        };
+          end: self.lastTokEnd
+        } as SLTNode;
       }
 
-      this.raise(start, `Unexpected SLT keyword: ${keyword}`);
-    }
+      // Fallback: raise if available, otherwise throw
+      if (typeof self.raise === "function") {
+        self.raise(start, `Unexpected SLT keyword: ${keyword}`);
+      }
+      throw new Error(`Unexpected SLT keyword: ${keyword}`);
+    };
   };
 }
