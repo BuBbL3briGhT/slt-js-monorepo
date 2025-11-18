@@ -5,7 +5,6 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
-    "build": "tsc -p tsconfig.json || echo build not configured",
     "test": "node test/run-tests.js"
   },
   "peerDependencies": {
