@@ -22,6 +22,5 @@ Thumbs.db
 *.tgz
 *.tar.gz
 
-*-lock.*
 *.tsbuildinfo
 -
