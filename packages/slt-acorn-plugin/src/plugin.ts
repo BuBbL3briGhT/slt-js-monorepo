@@ -42,7 +42,7 @@ export function sltPlugin(BaseParser: typeof Parser) {
       return super.parseStatement(context, topLevel);
     }
 
-    parseSLT(): SLTNode {
+    parseSLT(): any {
       const start = this.start;
       const keyword = String(this.value);
 
